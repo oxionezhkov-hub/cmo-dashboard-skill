@@ -1,0 +1,82 @@
+{
+  "company": "Онлайн-школа профессий «Вектор»",
+  "mode": "demo",
+  "periodDays": 28,
+  "ai": {
+    "enabled": false,
+    "model": "claude-haiku-4-5-20251001"
+  },
+  "notify": {
+    "enabled": false,
+    "botToken": "env:NOTIFY_BOT_TOKEN",
+    "chatId": "env:NOTIFY_CHAT_ID",
+    "onlyIfCritical": true
+  },
+  "sources": {
+    "direct": {
+      "enabled": true,
+      "token": "env:DIRECT_TOKEN",
+      "clientLogin": ""
+    },
+    "vk": {
+      "enabled": true,
+      "token": "env:VK_ADS_TOKEN"
+    },
+    "telegramAds": {
+      "enabled": true,
+      "spreadsheetId": "your-spreadsheet-id",
+      "apiKey": "env:SHEETS_API_KEY",
+      "range": "Telegram Ads!A1:E500"
+    },
+    "metrika": {
+      "enabled": true,
+      "token": "env:METRIKA_TOKEN",
+      "counterId": "00000000",
+      "goalId": "",
+      "pageGoals": {
+        "scroll50": "",
+        "scroll75": "",
+        "scroll100": "",
+        "cta": "",
+        "formStart": "",
+        "formSubmit": "",
+        "rage": ""
+      }
+    },
+    "telegram": {
+      "enabled": true,
+      "botToken": "env:BOT_TOKEN",
+      "eventsUrl": "https://your-worker.workers.dev/api/bot-events",
+      "eventsSecret": "env:BOT_EVENTS_SECRET",
+      "channelId": "@your_channel"
+    },
+    "amo": {
+      "enabled": true,
+      "subdomain": "yourcompany",
+      "token": "env:AMO_TOKEN",
+      "wonStatusName": "Успешно реализовано",
+      "lostStatusName": "Закрыто и не реализовано",
+      "fieldMap": {
+        "channel": 0,
+        "campaign": 0,
+        "qualified": 0,
+        "lostReason": 0
+      }
+    },
+    "calls": {
+      "enabled": true,
+      "provider": "calltouch",
+      "token": "env:CALLTOUCH_TOKEN",
+      "siteId": "00000"
+    },
+    "sheets": {
+      "enabled": true,
+      "spreadsheetId": "your-spreadsheet-id",
+      "apiKey": "env:SHEETS_API_KEY",
+      "ranges": {
+        "plan": "План!A1:B20",
+        "costs": "Расходы!A1:B20"
+      }
+    }
+  }
+}
