@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Маркетинг «Вектор»</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="vendor/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#F3F4F7; --card:#FFFFFF; --line:#E3E6EE; --line-soft:#EFF1F6; --sunk:#F7F8FB;
+  --ink:#101828; --ink-2:#525B6E; --ink-3:#8A93A6;
+  --brand:#2B4ACB; --brand-soft:#E9EDFC; --brand-ink:#1F38A0;
+  --good:#12805C; --good-soft:#E4F3ED;
+  --bad:#C4373C; --bad-soft:#FBEAEA;
+  --warn:#B7791F; --warn-soft:#FBF1DF;
+  --alt:#5B4BD6; --alt-soft:#EDEBFB;
+  --teal:#0E7C86; --teal-soft:#E2F1F2;
+  --r-lg:12px; --r:9px; --r-sm:6px;
+  --shadow:0 1px 2px rgba(16,24,40,.05);
+  --shadow-pop:0 24px 64px rgba(16,24,40,.18);
+  --sans:'Golos Text',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{margin:0;font-weight:600;letter-spacing:-.01em}
+button{font:inherit;color:inherit}
+.wrap{max-width:1340px;margin:0 auto;padding:0 24px}
+@media(max-width:560px){.wrap{padding:0 16px}}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+
+/* header */
+header.top{position:sticky;top:0;z-index:30;background:rgba(243,244,247,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top-in{display:flex;align-items:center;gap:20px;padding-block:16px;flex-wrap:wrap}
+.brand h1{font-size:18px;font-weight:650}
+.brand .sub{color:var(--ink-3);font-size:12.5px;margin-top:2px}
+.top-right{margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.seg{display:inline-flex;background:var(--sunk);border:1px solid var(--line);border-radius:var(--r);padding:2px}
+.seg button{border:0;background:transparent;font-size:12.5px;font-weight:500;color:var(--ink-2);padding:6px 12px;border-radius:var(--r-sm);cursor:pointer}
+.seg button.on{background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
+.btn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--card);border-radius:var(--r);
+  padding:7px 13px;font-size:12.5px;font-weight:500;cursor:pointer;color:var(--ink-2)}
+.btn:hover{border-color:#CDD3E1;color:var(--ink)}
+.btn:disabled{opacity:.55;cursor:default}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.primary:hover{background:var(--brand-ink)}
+.btn:focus-visible,.seg button:focus-visible,a:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.updated{font-size:12px;color:var(--ink-3)}
+nav.tabs{display:flex;gap:2px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs a{padding:6px 12px;border-radius:var(--r-sm);color:var(--ink-2);text-decoration:none;font-size:13px;white-space:nowrap}
+nav.tabs a:hover{background:var(--card);color:var(--ink)}
+
+/* sections */
+section{padding-top:36px;scroll-margin-top:130px}
+.sec-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.sec-head h2{font-size:18px}
+.sec-head .hint{color:var(--ink-3);font-size:13px}
+.sec-head .btn{margin-left:auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg)}
+.card-pad{padding:18px 20px}
+.card h3{font-size:14px;font-weight:600}
+.card .cap{color:var(--ink-3);font-size:12.5px;margin:3px 0 14px}
+.grid{display:grid;gap:14px}
+.grid > *{min-width:0}
+canvas{max-width:100%}
+.g-4{grid-template-columns:repeat(4,1fr)}
+.g-3{grid-template-columns:repeat(3,1fr)}
+.g-2{grid-template-columns:repeat(2,1fr)}
+.g-23{grid-template-columns:1.5fr 1fr}
+.g-32{grid-template-columns:1fr 1.35fr}
+@media(max-width:1080px){.g-4{grid-template-columns:repeat(2,1fr)}.g-3,.g-23,.g-32{grid-template-columns:1fr}}
+@media(max-width:640px){.g-4,.g-2{grid-template-columns:1fr}}
+
+/* kpi */
+.kpi{padding:15px 17px}
+.kpi .lab{color:var(--ink-2);font-size:12.5px}
+.kpi .val{font-family:var(--mono);font-size:24px;font-weight:600;letter-spacing:-.04em;margin-top:5px}
+.kpi .row{display:flex;align-items:center;gap:8px;margin-top:7px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:600;padding:2px 7px;border-radius:var(--r-sm);
+  background:var(--line-soft);color:var(--ink-2);font-family:var(--mono)}
+.pill.up{background:var(--good-soft);color:var(--good)}
+.pill.down{background:var(--bad-soft);color:var(--bad)}
+.kpi .vs{color:var(--ink-3);font-size:11.5px}
+.kpi .spark{margin-top:11px;height:32px;display:block}
+.planbar{margin-top:11px}
+.planbar .t{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink-3);margin-bottom:5px}
+.track{height:5px;border-radius:3px;background:var(--line-soft);overflow:hidden}
+.track > i{display:block;height:100%;background:var(--brand)}
+.track > i.ok{background:var(--good)} .track > i.bad{background:var(--bad)} .track > i.warn{background:var(--warn)}
+
+/* insights */
+.ins{display:grid;gap:14px;grid-template-columns:repeat(2,1fr)}
+@media(max-width:900px){.ins{grid-template-columns:1fr}}
+.insight{padding:18px 20px;display:flex;flex-direction:column;gap:11px}
+.insight .tag{align-self:flex-start;display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:600;
+  padding:3px 9px 3px 7px;border-radius:var(--r-sm);background:var(--line-soft);color:var(--ink-2)}
+.insight .tag b{width:6px;height:6px;border-radius:50%;background:currentColor}
+.insight.critical .tag{background:var(--bad-soft);color:var(--bad)}
+.insight.warning .tag{background:var(--warn-soft);color:var(--warn)}
+.insight.opportunity .tag{background:var(--good-soft);color:var(--good)}
+.insight.info .tag{background:var(--teal-soft);color:var(--teal)}
+.insight h4{font-size:15.5px;font-weight:600;line-height:1.35;text-wrap:balance}
+.insight p{margin:0;color:var(--ink-2);font-size:13.5px}
+.ev{display:flex;flex-wrap:wrap;gap:6px}
+.ev span{font-size:12px;background:var(--sunk);border:1px solid var(--line-soft);border-radius:var(--r-sm);padding:4px 8px;color:var(--ink-2)}
+.ev span b{font-family:var(--mono);color:var(--ink);font-weight:600}
+.act{display:flex;gap:9px;align-items:flex-start;border-left:2px solid var(--brand);padding:2px 0 2px 12px;font-size:13.5px}
+.foot-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:auto;padding-top:4px;border-top:1px solid var(--line-soft)}
+.impact{font-size:12.5px;color:var(--ink-3);padding-top:10px}
+.impact b{font-family:var(--mono);color:var(--good)}
+.srcs{padding-top:10px;margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.srcs span{font-size:11px;color:var(--ink-3)}
+
+/* ask */
+.ask textarea{width:100%;border:1px solid var(--line);border-radius:var(--r);padding:11px 12px;font:inherit;font-size:13.5px;
+  resize:vertical;min-height:74px;background:var(--sunk);color:var(--ink)}
+.ask textarea:focus{outline:2px solid var(--brand);outline-offset:0;background:var(--card)}
+.quick{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:11px}
+.quick button{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;font-size:12.5px;color:var(--ink-2);cursor:pointer}
+.quick button:hover{border-color:var(--brand);color:var(--brand)}
+.answer{margin-top:14px;background:var(--sunk);border:1px solid var(--line-soft);border-radius:var(--r);padding:14px 16px;font-size:13.5px;white-space:pre-wrap}
+.answer:empty{display:none}
+
+/* tables */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:right;font-weight:500;color:var(--ink-3);font-size:11.5px;padding:0 11px 9px;white-space:nowrap;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left;padding-left:0}
+th:last-child,td:last-child{padding-right:0}
+th.sortable{cursor:pointer;user-select:none}
+th.sortable:hover{color:var(--ink)}
+th.act-sort{color:var(--brand)}
+td{text-align:right;padding:10px 11px;border-bottom:1px solid var(--line-soft);white-space:nowrap;font-family:var(--mono);font-variant-numeric:tabular-nums}
+td:first-child{font-family:var(--sans)}
+tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--sunk)}
+.name{display:flex;flex-direction:column;gap:1px;min-width:180px}
+.name b{font-weight:550}
+.name small{color:var(--ink-3);font-size:11.5px}
+.bar-cell{display:flex;align-items:center;justify-content:flex-end;gap:9px}
+.bar{width:58px;height:5px;border-radius:3px;background:var(--line-soft);overflow:hidden;flex:none}
+.bar i{display:block;height:100%;background:var(--brand)}
+.bar i.red{background:var(--bad)} .bar i.green{background:var(--good)} .bar i.amber{background:var(--warn)}
+.badge{font-family:var(--mono);font-size:11.5px;font-weight:600;padding:2px 7px;border-radius:var(--r-sm)}
+.badge.g{background:var(--good-soft);color:var(--good)}
+.badge.r{background:var(--bad-soft);color:var(--bad)}
+.badge.n{background:var(--line-soft);color:var(--ink-2)}
+
+/* charts and funnels */
+.chart{position:relative;height:300px}
+.chart.sm{height:232px}
+.funnel{display:flex;flex-direction:column;gap:8px}
+.fstep{display:flex;align-items:center;gap:12px}
+.fstep .flab{width:180px;font-size:13px;color:var(--ink-2);flex:none}
+.fstep .fbar{flex:1;height:34px;border-radius:var(--r-sm);background:var(--sunk);position:relative;overflow:hidden;min-width:90px}
+.fstep .fbar i{position:absolute;inset:0;background:var(--brand);border-radius:var(--r-sm)}
+.fstep .fbar span{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#fff;font-weight:600;font-size:13px;z-index:1;font-family:var(--mono)}
+.fstep .fbar span.out{color:var(--ink)}
+.fstep .fmeta{width:112px;text-align:right;font-size:12px;color:var(--ink-3);flex:none;font-family:var(--mono)}
+.fstep .fmeta b{display:block;color:var(--ink);font-weight:600;font-size:12.5px}
+@media(max-width:720px){.fstep{flex-wrap:wrap}.fstep .flab{width:100%}.fstep .fmeta{width:auto}}
+.head-stats{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:12px}
+.head-stats div span{display:block;color:var(--ink-3);font-size:12px}
+.head-stats div b{font-family:var(--mono);font-size:15px;font-weight:600}
+
+/* digest */
+.tg{background:var(--sunk);border:1px solid var(--line-soft);border-radius:var(--r);padding:13px}
+.tg .who{display:flex;align-items:center;gap:8px;margin-bottom:9px;font-size:12.5px;color:var(--ink-2)}
+.tg .who i{width:22px;height:22px;border-radius:50%;background:var(--brand);display:grid;place-items:center;color:#fff;font-style:normal;font-size:11px}
+.tg .msg{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:13px 15px;white-space:pre-wrap;font-size:13px;line-height:1.55}
+
+/* modal */
+.modal{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-start;justify-content:center;padding:32px 16px;
+  background:rgba(16,24,40,.42);overflow-y:auto}
+.modal[hidden]{display:none!important}
+.modal-in{width:min(1080px,100%);background:var(--card);border-radius:var(--r-lg);box-shadow:var(--shadow-pop);border:1px solid var(--line)}
+.modal-head{display:flex;align-items:flex-start;gap:16px;padding:20px 22px 16px;border-bottom:1px solid var(--line)}
+.modal-head h3{font-size:17px}
+.modal-head p{margin:3px 0 0;color:var(--ink-3);font-size:12.5px}
+.modal-close{margin-left:auto;border:1px solid var(--line);background:var(--card);width:32px;height:32px;border-radius:var(--r-sm);
+  cursor:pointer;color:var(--ink-2);font-size:16px;line-height:1;flex:none}
+.modal-close:hover{border-color:#CDD3E1;color:var(--ink)}
+.modal-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:14px 22px;border-bottom:1px solid var(--line);background:var(--sunk)}
+.modal-body{padding:20px 22px 24px;display:grid;gap:18px}
+.modal-body > *{min-width:0}
+.field{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink-2)}
+.field select,.field input{border:1px solid var(--line);background:var(--card);border-radius:var(--r-sm);padding:6px 9px;font:inherit;font-size:12.5px;color:var(--ink)}
+.field input[type=search]{min-width:190px}
+.mini{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.mini > div{background:var(--sunk);border:1px solid var(--line-soft);border-radius:var(--r);padding:11px 13px}
+.mini span{display:block;color:var(--ink-3);font-size:12px}
+.mini b{font-family:var(--mono);font-size:18px;font-weight:600}
+.hint-row{color:var(--ink-3);font-size:12.5px}
+footer{margin:44px 0 60px;color:var(--ink-3);font-size:12.5px}
+@media (prefers-reduced-motion:no-preference){.modal-in{animation:pop .16s ease-out}@keyframes pop{from{transform:translateY(6px);opacity:.6}to{transform:none;opacity:1}}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="top-in">
+      <div class="brand">
+        <h1 id="company">Дашборд отдела маркетинга</h1>
+        <div class="sub" id="period">—</div>
+      </div>
+      <div class="top-right">
+        <div class="seg" id="globalRange">
+          <button data-days="7">7 дней</button>
+          <button data-days="14">14 дней</button>
+          <button data-days="28" class="on">28 дней</button>
+        </div>
+        <button class="btn" id="refreshBtn">Обновить</button>
+        <span class="updated" id="updated"></span>
+      </div>
+    </div>
+    <nav class="tabs">
+      <a href="#kpi">Итоги</a>
+      <a href="#insights">ИИ-аналитика</a>
+      <a href="#dynamics">Динамика</a>
+      <a href="#channels">Каналы и кампании</a>
+      <a href="#site">Сайт и страницы</a>
+      <a href="#calls">Звонки</a>
+      <a href="#bot">Telegram-бот</a>
+      <a href="#sales">Продажи</a>
+      <a href="#plan">План и факт</a>
+      <a href="#pipeline">Источники данных</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="kpi">
+    <div class="sec-head">
+      <h2>Итоги периода</h2>
+      <span class="hint" id="kpiHint"></span>
+      <button class="btn" data-modal="kpi">Подробнее</button>
+    </div>
+    <div class="grid g-4" id="kpiGrid"></div>
+  </section>
+
+  <section id="insights">
+    <div class="sec-head">
+      <h2>ИИ-аналитика</h2>
+      <span class="hint" id="insHint"></span>
+      <button class="btn" data-modal="insights">Все выводы</button>
+    </div>
+    <div class="ins" id="insGrid"></div>
+    <div class="card card-pad ask" style="margin-top:14px">
+      <h3>Уточнить у ИИ</h3>
+      <div class="cap">вопрос по цифрам этого периода — ответ считается по тем же данным, что и дашборд</div>
+      <div class="quick" id="askQuick"></div>
+      <textarea id="askInput" placeholder="Например: какие кампании дали продажи дороже 20 000 ₽ за штуку и что с ними делать?"></textarea>
+      <div style="display:flex;gap:10px;align-items:center;margin-top:10px">
+        <button class="btn primary" id="askBtn">Спросить</button>
+        <span class="hint-row" id="askHint"></span>
+      </div>
+      <div class="answer" id="askAnswer"></div>
+    </div>
+  </section>
+
+  <section id="dynamics">
+    <div class="sec-head">
+      <h2>Динамика</h2>
+      <span class="hint">заявки, расход и стоимость заявки по дням</span>
+      <button class="btn" data-modal="dynamics">Подробнее</button>
+    </div>
+    <div class="grid g-23">
+      <div class="card card-pad">
+        <h3>Заявки и расход по дням</h3>
+        <div class="cap">столбцы — расход, линия — заявки, пунктир — CPL</div>
+        <div class="chart"><canvas id="chDaily"></canvas></div>
+      </div>
+      <div class="card card-pad">
+        <h3>Сквозная воронка</h3>
+        <div class="cap">от показа в рекламе до денег в CRM</div>
+        <div class="funnel" id="funnel"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="channels">
+    <div class="sec-head">
+      <h2>Каналы и кампании</h2>
+      <span class="hint">сколько продаж принесла каждая реклама</span>
+      <button class="btn" data-modal="channels">Подробнее</button>
+    </div>
+    <div class="grid g-32" style="margin-bottom:14px">
+      <div class="card card-pad">
+        <h3>Расход и выручка по каналам</h3>
+        <div class="cap">видно, какой канал возвращает деньги, а какой — нет</div>
+        <div class="chart sm"><canvas id="chChannels"></canvas></div>
+      </div>
+      <div class="card card-pad">
+        <h3>Каналы</h3>
+        <div class="cap">CPL, качество заявок и возврат на вложенное</div>
+        <div class="tbl-wrap"><table id="tblChannels"></table></div>
+      </div>
+    </div>
+    <div class="card card-pad">
+      <h3>Рекламные кампании</h3>
+      <div class="cap">Директ, VK Ads и Telegram Ads в одной таблице · клик по заголовку столбца сортирует</div>
+      <div class="tbl-wrap"><table id="tblCampaigns"></table></div>
+    </div>
+  </section>
+
+  <section id="site">
+    <div class="sec-head">
+      <h2>Сайт и страницы</h2>
+      <span class="hint">источники визитов и поведение на страницах</span>
+      <button class="btn" data-modal="site">Подробнее</button>
+    </div>
+    <div class="grid g-32" style="margin-bottom:14px">
+      <div class="card card-pad">
+        <h3>Источники визитов</h3>
+        <div class="cap">доля в общем трафике</div>
+        <div class="chart sm"><canvas id="chSources"></canvas></div>
+      </div>
+      <div class="card card-pad">
+        <h3>Качество трафика</h3>
+        <div class="cap">отказы и глубина просмотра по источникам</div>
+        <div class="tbl-wrap"><table id="tblSources"></table></div>
+      </div>
+    </div>
+    <div class="card card-pad">
+      <h3>Поведение на страницах</h3>
+      <div class="cap">прокрутка, клики и формы — из Метрики и записей Вебвизора</div>
+      <div class="tbl-wrap"><table id="tblPages"></table></div>
+    </div>
+  </section>
+
+  <section id="calls">
+    <div class="sec-head">
+      <h2>Звонки</h2>
+      <span class="hint">коллтрекинг: сколько обращений доходит до менеджера</span>
+      <button class="btn" data-modal="calls">Подробнее</button>
+    </div>
+    <div class="grid g-23">
+      <div class="card card-pad">
+        <h3>Звонки по часам</h3>
+        <div class="cap">светлая часть столбца — пропущенные</div>
+        <div class="chart sm"><canvas id="chCalls"></canvas></div>
+      </div>
+      <div class="card card-pad">
+        <h3>Итоги по звонкам</h3>
+        <div class="cap">за период</div>
+        <div class="mini" id="callStats"></div>
+        <div class="tbl-wrap" style="margin-top:14px"><table id="tblCallChannels"></table></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="bot">
+    <div class="sec-head">
+      <h2>Telegram-бот</h2>
+      <span class="hint">подписки, квиз и записи на консультацию</span>
+      <button class="btn" data-modal="bot">Подробнее</button>
+    </div>
+    <div class="grid g-23">
+      <div class="card card-pad">
+        <h3>Конверсия «/start → квиз пройден»</h3>
+        <div class="cap">по дням, % от начавших</div>
+        <div class="chart sm"><canvas id="chBot"></canvas></div>
+      </div>
+      <div class="card card-pad">
+        <h3>Воронка бота</h3>
+        <div class="cap">за выбранный период</div>
+        <div class="funnel" id="botFunnel"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="sales">
+    <div class="sec-head">
+      <h2>Продажи</h2>
+      <span class="hint">что происходит с заявкой после передачи в отдел</span>
+      <button class="btn" data-modal="sales">Подробнее</button>
+    </div>
+    <div class="grid g-3" style="margin-bottom:14px" id="amoStats"></div>
+    <div class="grid g-23">
+      <div class="card card-pad">
+        <h3>Менеджеры</h3>
+        <div class="cap">скорость обработки влияет на конверсию сильнее цены клика</div>
+        <div class="tbl-wrap"><table id="tblManagers"></table></div>
+      </div>
+      <div class="card card-pad">
+        <h3>Причины отказов</h3>
+        <div class="cap">из карточек закрытых сделок</div>
+        <div class="chart sm"><canvas id="chLost"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="plan">
+    <div class="sec-head">
+      <h2>План и факт</h2>
+      <span class="hint">план месяца из таблицы, факт из CRM и рекламных кабинетов</span>
+      <button class="btn" data-modal="plan">Подробнее</button>
+    </div>
+    <div class="grid g-2">
+      <div class="card card-pad">
+        <h3>Выполнение плана месяца</h3>
+        <div class="cap" id="planCap"></div>
+        <div id="planRows" style="display:grid;gap:15px;margin-top:4px"></div>
+      </div>
+      <div class="card card-pad">
+        <h3>Дайджест руководителю</h3>
+        <div class="cap">уходит в Telegram, когда появляется критичный вывод</div>
+        <div class="tg">
+          <div class="who"><i>М</i> Marketing Digest</div>
+          <div class="msg" id="digest"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pipeline">
+    <div class="sec-head">
+      <h2>Источники данных</h2>
+      <span class="hint">каждый блок собирается из своей системы</span>
+    </div>
+    <div class="card card-pad">
+      <div class="tbl-wrap"><table id="tblPipeline"></table></div>
+    </div>
+  </section>
+
+  <footer>
+    <div id="footNote"></div>
+  </footer>
+</main>
+
+<div class="modal" id="modal" hidden>
+  <div class="modal-in" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-head">
+      <div>
+        <h3 id="modalTitle"></h3>
+        <p id="modalSub"></p>
+      </div>
+      <button class="modal-close" id="modalClose" aria-label="Закрыть">×</button>
+    </div>
+    <div class="modal-controls" id="modalControls"></div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script src="data/dashboard.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+# Автообновление дашборда раз в сутки. Положите файл в .github/workflows/ своего репозитория.
+# Секреты (Settings → Secrets and variables → Actions) — те же имена, что в config.json (env:NAME).
+name: Marketing dashboard refresh
+
+on:
+  schedule:
+    - cron: '0 5 * * *'   # 08:00 МСК
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+
+      - name: Собрать данные и посчитать инсайты
+        working-directory: dashboard/collectors
+        env:
+          DIRECT_TOKEN: ${{ secrets.DIRECT_TOKEN }}
+          METRIKA_TOKEN: ${{ secrets.METRIKA_TOKEN }}
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          BOT_EVENTS_SECRET: ${{ secrets.BOT_EVENTS_SECRET }}
+          AMO_TOKEN: ${{ secrets.AMO_TOKEN }}
+          SHEETS_API_KEY: ${{ secrets.SHEETS_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          NOTIFY_BOT_TOKEN: ${{ secrets.NOTIFY_BOT_TOKEN }}
+          NOTIFY_CHAT_ID: ${{ secrets.NOTIFY_CHAT_ID }}
+        run: node collect.js --mode=live --ai --notify
+
+      - name: Закоммитить свежие данные
+        run: |
+          git config user.name "dashboard-bot"
+          git config user.email "dashboard-bot@users.noreply.github.com"
+          git add dashboard/data
+          git diff --staged --quiet || git commit -m "data: обновление дашборда $(date -u +%F)"
+          git push
+
+      # Публикация статики: GitHub Pages, Cloudflare Pages или любой другой хостинг.
+      # - uses: cloudflare/wrangler-action@v3
+      #   with:
+      #     apiToken: ${{ secrets.CF_API_TOKEN }}
+      #     command: pages deploy dashboard --project-name=marketing-dashboard
